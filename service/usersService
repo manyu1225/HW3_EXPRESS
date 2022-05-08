@@ -1,0 +1,9 @@
+const  Users = require('../model/user');
+
+
+
+const doc = await  Users.findById(_id);
+
+
+module.exports =  Users;
+
