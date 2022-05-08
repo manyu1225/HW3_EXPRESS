@@ -13,14 +13,30 @@ router.get('/', async (req, res, next) =>  {
 
 
   router.get('/:id', async (req, res, next) => {
-
+    try {
       // 取得 id
       const id = req.params.id; 
-      const data = await Post.findByIdAndDelete(id);
-      res.status(200).json({
-        "status": 'success',
-        "data": data
+      const data = await Post.find({_id: id });
+     // console.log(data.length); 1
+      if (data.length) {
+        res.status(200).json({
+            "status": 'success',
+            data: {
+                data
+            }
+        });
+        } else {
+            res.status(400).json({
+            status: 'fail',
+            message: "id 不存在"
+            });
+        }
+    } catch (err) {
+      res.status(400).json({
+        status: 'fail',
+        message: err.message
       });
+    }
   });
 
 
