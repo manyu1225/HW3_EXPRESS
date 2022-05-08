@@ -14,26 +14,29 @@ router.get('/', async (req, res, next) =>  {
 router.post('/', async (req, res, next) =>{
     try{
       const data = req.body;
-      let { name ,introduction} = data;
-  
-      if (!name) {
-        // 回傳失敗
+      if (data.name) {
+        const newAuthor = await Author.create(
+          {
+            name: data.name,
+            introduction: data.introduction
+          }
+        );
+        res.status(200).json({
+          "status": 'success',
+          "data": newAuthor
+        });
+      } else {
         res.status(400).json({
-          "status": 'fail',
-          "message": '請確認欄位'
-        })
-        return;
-      } 
-      const  dataAuthor = await Author.create({ name , introduction})
-      res.status(200).json({ status: 'success', dataAuthor });  
-   
-    } catch (error) {
-      // 回傳失敗
+          "status": 'false',
+          "message": "欄位未填寫正確，或無此 ID"
+        });
+      }
+    } catch (error){
       res.status(400).json({
         "status": 'false',
         "message": error.message
-      })
-    }
-  });
-
+      });
+    }  
+  })
+  
 module.exports = router;

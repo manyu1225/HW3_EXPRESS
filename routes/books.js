@@ -42,28 +42,30 @@ router.get('/', async (req, res, next) =>  {
     try {
       // 取得 id
       const id = req.params.id; 
-      const data = await Book.find({_id: id });
-     // console.log(data.length); 1
-      if (data.length) {
-        res.status(200).json({
-            "status": 'success',
-            data: {
-                data
-            }
-        });
-        } else {
-            res.status(400).json({
-            status: 'fail',
-            message: "id 不存在"
-            });
+     const book = await Book.find({ _id: id }).populate({
+      path: 'author', // 對應到 bookSchema author
+      select: 'name',
+    });
+    if (book.length) {
+      res.status(200).json({
+        status: 'success',
+        data: {
+          book
         }
-    } catch (err) {
+      });
+    } else {
       res.status(400).json({
         status: 'fail',
-        message: err.message
+        message: "id 不存在"
       });
     }
-  });
+  } catch (err) {
+    res.status(400).json({
+      status: 'fail',
+      message: err.message
+    });
+  }
+})
 
 
 
